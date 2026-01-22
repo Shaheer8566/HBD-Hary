@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000000">
+    <title>System Override... | Birthday</title>
+  
+    <!-- PRELOAD CRITICAL ASSETS -->
+    <link rel="preload" as="image" href="https://z-cdn-media.chatglm.cn/files/0adc0a69-0467-49ad-a994-2ac6c24f56fe.jpg?auth_key=1869029700-c49e89acd9234d48b0bda0462a329b1a-0-0df31295f514536b65f6242e41a0ebaa">
+    <link rel="preload" as="image" href="https://z-cdn-media.chatglm.cn/files/e5dce536-ebeb-465d-8db1-5bb4e31c2661.jpg?auth_key=1869033359-4956757625344f28b5b8432200be872e-0-d75dddf9e20f85998fd66ffd9f7685f9">
+    <link rel="preload" as="image" href="https://z-cdn-media.chatglm.cn/files/ad8b1f73-1159-40c9-abea-ce435c99b55f.jpg?auth_key=1869033359-d36145328cdf4c37b91dcc7bc7050d8a-0-9b8d343e5792fd6588a33472f1098340">
+    <link rel="preload" as="image" href="https://z-cdn-media.chatglm.cn/files/d7764d27-49ed-45a1-bfc4-59a6c3f9a382.jpg?auth_key=1869033359-235f97539add47959864e1bd00e9671f-0-59dc16b096f1c1ca2b1b966d94958df3">
+  
+    <style>
+        /* --- CSS VARIABLES & RESET --- */
+        :root {
+            --primary: #00ff00;
+            --error: #ff0000;
+            --bg-dark: #050505;
+            --bg-panel: #080808;
+            --neon-blue: #00f3ff;
+            --neon-purple: #bc13fe;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+        html { font-size: 16px; }
+        body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            touch-action: manipulation;
+        }
+        /* --- UTILITIES --- */
+        .hidden { display: none !important; }
+        .fade-out { opacity: 0 !important; pointer-events: none !important; transition: opacity 0.8s ease; }
+        .fade-in { opacity: 1 !important; transition: opacity 0.8s ease; }
+        
+        /* --- 1. PRANK SCREEN --- */
+        #prank-screen {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            text-align: center;
+            padding: 20px;
+        }
+        .glitch-text {
+            color: var(--error);
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            animation: glitchAnim 1s infinite;
+            font-weight: bold;
+        }
+        @keyframes glitchAnim {
+            0% { text-shadow: 2px 0 var(--primary); transform: translateX(0); }
+            50% { text-shadow: -2px 0 var(--primary); transform: translateX(-1px); }
+            100% { text-shadow: 2px 0 var(--primary); transform: translateX(0); }
+        }
+        .progress-bar-container {
+            width: 80%;
+            max-width: 300px;
+            height: 6px;
+            background: #222;
+            margin: 20px 0;
+            position: relative;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 0%;
+            box-shadow: 0 0 10px var(--primary);
+            transition: width 0.3s linear;
+        }
+        .terminal-text {
+            color: var(--primary);
+            font-size: 1rem;
+            min-height: 1.5em;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        /* --- 2. HACK SCREEN (ENHANCED CINEMATIC) --- */
+        #hack-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-panel);
+            z-index: 8888;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            font-family: var(--font-mono);
+        }
+        .hack-avatar-container {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .hack-avatar {
+            width: 100%;
+            height: 100%;
+            background: #222;
+            border: 2px solid var(--neon-blue);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+        .hack-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* Scanner animation line */
+        .scan-line {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 2px;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            z-index: 3;
+            animation: scan 2s infinite linear;
+            display: none; /* Enabled via JS */
+        }
+        @keyframes scan { 0% {top:0;} 100% {top:100%;} }
+
+        /* Target Info */
+        .target-info {
+            text-align: center;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.5s ease;
+        }
+        .target-info.active { opacity: 1; transform: scale(1); }
+        
+        .display-name {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+        .username {
+            font-size: 1.2rem;
+            color: var(--neon-blue);
+            font-family: var(--font-mono);
+            background: rgba(0, 243, 255, 0.1);
+            padding: 5px 15px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        /* Terminal */
+        .terminal-window {
+            width: 90%;
+            max-width: 400px;
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 100px;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: #ccc;
+            text-align: left;
+            margin-bottom: 20px;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+        }
+        .terminal-line {
+            margin-bottom: 4px;
+            display: block;
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+        .terminal-line.visible { opacity: 1; transform: translateX(0); }
+        .terminal-line.success { color: var(--primary); }
+        .terminal-line.warning { color: var(--neon-purple); }
+
+        /* Robux Counter */
+        .robux-container {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .robux-counter {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #00b06f;
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 20px rgba(0, 176, 111, 0.4);
+        }
+
+        /* --- 3. MAIN APP --- */
+        #main-app {
+            position: absolute;
+            inset: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            opacity: 0;
+            scroll-behavior: smooth;
+            z-index: 1;
+        }
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background: radial-gradient(circle at center, rgba(188, 19, 254, 0.2) 0%, rgba(26, 26, 46, 1) 70%);
+            padding: 20px;
+        }
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            margin: 0;
+            background: linear-gradient(to right, #fff, var(--neon-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            line-height: 1.1;
+        }
+        .subtitle { font-size: 1.2rem; color: #ccc; margin-top: 10px; margin-bottom: 20px; }
+        .avatar-large {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            border: 4px solid var(--neon-blue);
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.4);
+            margin-bottom: 25px;
+            background-size: cover;
+            background-position: center;
+            animation: float 4s ease-in-out infinite;
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        
+        /* SECTIONS */
+        section { padding: 60px 20px; display: flex; flex-direction: column; align-items: center; width: 100%; max-width: 800px; margin: 0 auto; }
+        .section-title {
+            font-size: 1.8rem; color: var(--neon-blue); margin-bottom: 30px;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 2px solid var(--neon-purple); padding-bottom: 10px; text-align: center;
+        }
+        /* CARDS */
+        .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; width: 100%; }
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 25px 15px;
+            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+        .card:active { transform: scale(0.96); }
+        .card h3 { font-size: 0.9rem; color: var(--neon-purple); margin-bottom: 5px; font-weight: normal; }
+        .card p { font-size: 1.8rem; font-weight: bold; margin: 0; }
+        
+        /* PC BUILD */
+        .pc-build { background: #1a1a1a; padding: 20px; border-radius: 16px; width: 100%; border: 1px solid #333; }
+        .pc-part { display: flex; justify-content: space-between; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #333; font-size: 0.9rem; }
+        .pc-part:last-child { border-bottom: none; }
+        .pc-part span:last-child { color: var(--primary); font-family: var(--font-mono); }
+        
+        /* ROBUX DISPLAY */
+        .robux-section { text-align: center; }
+        .big-robux { font-size: 3.5rem; color: #00b06f; font-weight: 900; margin: 20px 0; text-shadow: 0 0 20px rgba(0, 176, 111, 0.3); }
+
+        /* --- SLIDER (OPTIMIZED) --- */
+        .slider-wrapper { width: 100%; position: relative; }
+        .slider-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 20px 5px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            cursor: grab;
+            overscroll-behavior-x: contain;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            /* Hardware Acceleration */
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+        .slider-container::-webkit-scrollbar { display: none; }
+        .slider-container:active { cursor: grabbing; }
+        
+        .slide {
+            flex: 0 0 85vw;
+            height: 55vh;
+            border-radius: 16px;
+            overflow: hidden;
+            scroll-snap-align: center;
+            position: relative;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            /* Hardware Acceleration */
+            will-change: transform;
+            transform: translateZ(0);
+        }
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            pointer-events: none;
+            /* Prevents white flash while loading */
+            background-color: #111;
+        }
+        
+        /* MESSAGE */
+        .message-box {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            color: #2c2c2c;
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            font-size: 1.05rem;
+            line-height: 1.6;
+            text-align: left;
+            min-height: 200px;
+        }
+        
+        .btn {
+            background: var(--neon-blue); color: #000; border: none; padding: 16px 40px;
+            font-size: 1.1rem; border-radius: 50px; font-weight: bold; margin-top: 25px;
+            cursor: pointer; box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+            transition: transform 0.1s, box-shadow 0.2s; text-transform: uppercase;
+        }
+        .btn:active { transform: scale(0.95); box-shadow: 0 0 10px rgba(0, 243, 255, 0.2); }
+        
+        footer { padding: 40px 20px; text-align: center; color: #555; font-size: 0.8rem; margin-top: auto; }
+        
+        #confetti-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 10000; }
+        
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+        @keyframes shake {
+            10%, 90% { transform: translate3d(-1px, 0, 0); }
+            20%, 80% { transform: translate3d(2px, 0, 0); }
+            30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+            40%, 60% { transform: translate3d(4px, 0, 0); }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- STEP 1: PRANK -->
+    <div id="prank-screen">
+        <div class="glitch-text">⚠️ SYSTEM ALERT ⚠️</div>
+        <div id="prank-msg" class="terminal-text">Initializing scan...</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="prank-bar"></div>
+        </div>
+        <div style="color: #444; font-size: 0.75rem; margin-top: 15px;">CRITICAL ERROR DETECTED</div>
+    </div>
+
+    <!-- STEP 2: HACK (ENHANCED) -->
+    <div id="hack-screen" class="hidden">
+        <div class="hack-avatar-container">
+            <div class="hack-avatar">
+                <img src="https://z-cdn-media.chatglm.cn/files/0adc0a69-0467-49ad-a994-2ac6c24f56fe.jpg?auth_key=1869029700-c49e89acd9234d48b0bda0462a329b1a-0-0df31295f514536b65f6242e41a0ebaa" alt="Avatar">
+                <div class="scan-line" id="scan-line"></div>
+            </div>
+        </div>
+        
+        <div class="target-info" id="target-info">
+            <div class="display-name">Moon</div>
+            <div class="username">@harry112272</div>
+        </div>
+
+        <div class="terminal-window" id="hack-terminal">
+            <!-- Lines injected by JS -->
+        </div>
+
+        <div class="robux-container">
+            <div class="robux-counter" id="robux-display">R$ 0</div>
+        </div>
+    </div>
+
+    <!-- STEP 3: MAIN APP -->
+    <div id="main-app" class="hidden">
+        <!-- HERO -->
+        <section class="hero">
+            <div class="avatar-large" style="background-image: url('https://z-cdn-media.chatglm.cn/files/0adc0a69-0467-49ad-a994-2ac6c24f56fe.jpg?auth_key=1869029700-c49e89acd9234d48b0bda0462a329b1a-0-0df31295f514536b65f6242e41a0ebaa');"></div>
+            <h1>HAPPY BIRTHDAY</h1>
+            <div class="subtitle">HUZAIFA 🎉</div>
+            <div style="font-size: 4rem; margin: 10px 0;">🎂</div>
+            <p style="color: #aaa; max-width: 300px; line-height: 1.5;">Level 12 Unlocked! 🎮<br>From your cousin &amp; best friend.</p>
+            <button class="btn" onclick="scrollToSection('gamer-zone')">Enter Zone</button>
+        </section>
+
+        <!-- STATS -->
+        <section id="gamer-zone">
+            <div class="section-title">🎮 Gamer Stats</div>
+            <div class="stats-grid">
+                <div class="card"><h3>PUBG KDR</h3><p>0.0</p></div>
+                <div class="card"><h3>Roblox Oof</h3><p>∞</p></div>
+                <div class="card"><h3>Nood</h3><p>🤣</p></div>
+                <div class="card"><h3>Age</h3><p>12 👑</p></div>
+            </div>
+        </section>
+
+        <!-- DREAM PC -->
+        <section>
+            <div class="section-title">💻 Dream PC Build</div>
+            <div class="pc-build">
+                <div class="pc-part"><span>CPU</span><span>Intel Core i9-14900K</span></div>
+                <div class="pc-part"><span>GPU</span><span>RTX 4090 Ti Super</span></div>
+                <div class="pc-part"><span>RAM</span><span>64GB DDR5 RGB</span></div>
+                <div class="pc-part"><span>Storage</span><span>4TB NVMe SSD</span></div>
+                <div class="pc-part"><span>Cooling</span><span>Liquid Nitrogen ❄️</span></div>
+                <div style="text-align: center; margin-top: 15px; color: #555; font-size: 0.8rem;">(Install on your PC to activate 😂)</div>
+            </div>
+        </section>
+
+        <!-- ROBUX TRANSFER -->
+        <section class="robux-section">
+            <div class="section-title">💰 Robux Transfer</div>
+            <div class="big-robux">R$ 99,999</div>
+            <p style="color: #999;">Sent to: @harry112272</p>
+            <div style="background: rgba(0,176,111,0.15); padding: 10px; border-radius: 8px; margin-top: 15px; display: inline-block; color: #00b06f; border: 1px solid #00b06f;">
+                Status: Successful ✅
+            </div>
+            <p style="font-size: 0.8rem; margin-top: 15px; color: #555;">*Okay, maybe in your dreams only*</p>
+        </section>
+
+        <!-- GALLERY (OPTIMIZED) -->
+        <section style="padding-bottom: 20px;">
+            <div class="section-title">🖼️ Memories</div>
+            <p style="color: #888; margin-bottom: 15px; font-size: 0.9rem;">Swipe or Drag 👉</p>
+            <div class="slider-wrapper">
+                <div class="slider-container" id="gallery-track">
+                    <!-- Images with lazy loading and fallback handling -->
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/e5dce536-ebeb-465d-8db1-5bb4e31c2661.jpg?auth_key=1869033359-4956757625344f28b5b8432200be872e-0-d75dddf9e20f85998fd66ffd9f7685f9" alt="Memory 1" class="lazy-img" loading="eager"></div>
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/ad8b1f73-1159-40c9-abea-ce435c99b55f.jpg?auth_key=1869033359-d36145328cdf4c37b91dcc7bc7050d8a-0-9b8d343e5792fd6588a33472f1098340" alt="Memory 2" class="lazy-img"></div>
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/d7764d27-49ed-45a1-bfc4-59a6c3f9a382.jpg?auth_key=1869033359-235f97539add47959864e1bd00e9671f-0-59dc16b096f1c1ca2b1b966d94958df3" alt="Memory 3" class="lazy-img"></div>
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/914be436-1d88-4151-a9b0-7a9bebcd65d9.jpg?auth_key=1869033359-bf5af6bf967543c4a89d6b38bf3a07d9-0-a3463b36f853847f69e84893360aba9c" alt="Memory 4" class="lazy-img"></div>
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/3de86490-ce93-406e-92da-e1715e595dad.jpg?auth_key=1869033359-3bd69270d277439ebccd60587ec23f5e-0-09b06853048d5d3eaac67d2699ea4d03" alt="Memory 5" class="lazy-img"></div>
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/47f37a7f-1218-455f-a77e-b555ff79ca7e.jpg?auth_key=1869033359-fe9b83f175a94642aa5a5248e4dfc830-0-799390a32c69a71caf9f5a56ffce3323" alt="Memory 6" class="lazy-img"></div>
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/4f247076-51c7-4576-a634-3d3ae51ec2dd.jpg?auth_key=1869033359-25a6948c30904f1992e1900906298360-0-d60fe548b87bca6d2338056bdc9619f0" alt="Memory 7" class="lazy-img"></div>
+                    <div class="slide"><img data-src="https://z-cdn-media.chatglm.cn/files/f6335e28-a3e0-49ef-9cb6-c8c315691b61.jpg?auth_key=1869033359-911e54f2ca304e2b980f4723a2908dfe-0-6a0ed51a9113435480dd8e537e686837" alt="Memory 8" class="lazy-img"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MESSAGE -->
+        <section style="background: linear-gradient(to top, #000 0%, #1a1a2e 100%);">
+            <div class="section-title">❤️ From Bro</div>
+            <div class="message-box" id="typing-box">Hi Huzaifa,<br>I Hacked your roblox account, just kidding.<br>Happy Birthday! 🥳<br><br>I know you're crazy about Roblox and always dreaming about that next skin or more Robux. You're already 12, man! Time flies.<br><br>Just wanted to remind you that you're an awesome cousin and a true friend. Even if I tease you, I'm always proud of you.<br>Enjoy your day, Legend! 🔥</div>
+            <button class="btn" onclick="celebrate()">Party Again 🎉</button>
+            <div style="margin-top: 30px; font-size: 3rem;">🎁</div>
+        </section>
+        <footer>Made by Shaheer with ❤️ &amp; Code</footer>
+    </div>
+
+    <script>
+        /* --- 1. SYSTEM CONFIG --- */
+        const state = {
+            audioCtx: null
+        };
+        const dom = {
+            prank: document.getElementById('prank-screen'),
+            hack: document.getElementById('hack-screen'),
+            app: document.getElementById('main-app'),
+            prankBar: document.getElementById('prank-bar'),
+            prankMsg: document.getElementById('prank-msg'),
+            hackTerminal: document.getElementById('hack-terminal'),
+            targetInfo: document.getElementById('target-info'),
+            scanLine: document.getElementById('scan-line'),
+            robuxDisplay: document.getElementById('robux-display'),
+            gallery: document.getElementById('gallery-track')
+        };
+
+        /* --- 2. AUDIO ENGINE (AUTO-PLAY STRATEGY) --- */
+        function initAudio() {
+            if (!state.audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                state.audioCtx = new AudioContext();
+            }
+            if (state.audioCtx.state === 'suspended') {
+                state.audioCtx.resume();
+            }
+        }
+        const sfx = {
+            playTone: (freq, type, duration, vol = 0.1) => {
+                if (!state.audioCtx) return;
+                const osc = state.audioCtx.createOscillator();
+                const gain = state.audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, state.audioCtx.currentTime);
+                gain.gain.setValueAtTime(vol, state.audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, state.audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(state.audioCtx.destination);
+                osc.start();
+                osc.stop(state.audioCtx.currentTime + duration);
+            },
+            error: () => { sfx.playTone(150, 'sawtooth', 0.5); sfx.playTone(100, 'sawtooth', 0.5); },
+            blip: () => { sfx.playTone(800 + Math.random() * 200, 'square', 0.05, 0.05); },
+            win: () => {
+                if (!state.audioCtx) return;
+                [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+                    setTimeout(() => sfx.playTone(freq, 'sine', 0.6, 0.2), i * 150);
+                });
+            }
+        };
+
+        // Browser-safe Auto-play: Unlock on very first interaction (click/touch)
+        // This satisfies the "Auto-play" requirement as best as browser security allows
+        // without requiring a specific "Click to enable sound" button.
+        const unlockAudio = () => {
+            initAudio();
+            document.body.removeEventListener('click', unlockAudio);
+            document.body.removeEventListener('touchstart', unlockAudio);
+        };
+        document.body.addEventListener('click', unlockAudio, { once: true });
+        document.body.addEventListener('touchstart', unlockAudio, { once: true });
+
+        /* --- 3. PRANK LOGIC --- */
+        function startPrank() {
+            initAudio(); // Attempt to unlock immediately on load (rarely works but worth trying)
+            sfx.error();
+            document.body.classList.add('shake');
+            
+            const msgs = [
+                "Loading system files...",
+                "Accessing Roblox account...",
+                "⚠️ WARNING: Phone memory overload",
+                "Injecting code...",
+                "Bypassing security...",
+                "⚠️ SYSTEM LAG DETECTED",
+                "Downloading data..."
+            ];
+            let i = 0;
+            const interval = setInterval(() => {
+                if (i < msgs.length) {
+                    dom.prankMsg.textContent = msgs[i];
+                    dom.prankBar.style.width = `${((i + 1) / msgs.length) * 100}%`;
+                    sfx.blip();
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    setTimeout(startHack, 800);
+                }
+            }, 1200);
+        }
+
+        /* --- 4. HACK SCREEN (ENHANCED CINEMATIC) --- */
+        function startHack() {
+            document.body.classList.remove('shake');
+            dom.prank.classList.add('fade-out');
+            
+            setTimeout(() => {
+                dom.prank.classList.add('hidden');
+                dom.hack.classList.remove('hidden');
+                
+                // Start Cinematic Sequence (Total 6 seconds)
+                runCinematicSequence();
+            }, 800);
+        }
+
+        function runCinematicSequence() {
+            const terminal = dom.hackTerminal;
+            terminal.innerHTML = ''; // Clear previous
+            
+            const steps = [
+                { time: 0, text: "> Initializing connection...", type: "normal" },
+                { time: 800, text: "> Targeting User ID...", type: "warning" },
+                { time: 1600, text: "> Target Identified: HUZAIFA", type: "success" },
+                { time: 2400, text: "> Accessing Database...", type: "normal" },
+                { time: 3200, text: "> Bypassing Firewall...", type: "warning" },
+                { time: 4000, text: "> Injecting Robux Payload...", type: "success" },
+                { time: 5000, text: "> TRANSACTION SUCCESSFUL", type: "success" }
+            ];
+
+            // Show Target Info & Start Scanner after 1s
+            setTimeout(() => {
+                dom.targetInfo.classList.add('active');
+                dom.scanLine.style.display = 'block';
+                sfx.playTone(600, 'sine', 0.3); // Special sound
+            }, 1000);
+
+            // Add Terminal Lines
+            steps.forEach(step => {
+                setTimeout(() => {
+                    const line = document.createElement('span');
+                    line.className = `terminal-line ${step.type}`;
+                    line.textContent = step.text;
+                    terminal.appendChild(line);
+                    
+                    // Force reflow
+                    void line.offsetWidth;
+                    line.classList.add('visible');
+                    
+                    if (step.type === 'success') sfx.playTone(1000, 'square', 0.1);
+                    else sfx.blip();
+                }, step.time);
+            });
+
+            // Start Robux Counter (Fast accumulation, finishes at 5.5s)
+            let r = 0;
+            const robuxInt = setInterval(() => {
+                r += Math.floor(Math.random() * 3000);
+                if(r >= 99999) {
+                    r = 99999;
+                    clearInterval(robuxInt);
+                }
+                dom.robuxDisplay.textContent = `R$ ${r.toLocaleString()}`;
+            }, 50);
+
+            // End Sequence at 6s
+            setTimeout(() => {
+                revealApp();
+            }, 6000);
+        }
+
+        function revealApp() {
+            sfx.win();
+            dom.hack.classList.add('fade-out');
+            startConfetti('robux');
+          
+            setTimeout(() => {
+                dom.hack.classList.add('hidden');
+                dom.app.classList.remove('hidden');
+                void dom.app.offsetWidth;
+                dom.app.classList.add('fade-in');
+              
+                initAggressivePreloading();
+                initSliderDrag();
+                initTypingAnimation();
+                setTimeout(() => { startConfetti('confetti'); }, 3000);
+            }, 800);
+        }
+
+        /* --- 5. SLIDER LOGIC (OPTIMIZED) --- */
+        function initSliderDrag() {
+            let isDown = false;
+            let startX;
+            let scrollLeft;
+            const slider = dom.gallery;
+            const start = (e) => {
+                isDown = true;
+                slider.classList.add('active');
+                startX = e.pageX || e.touches[0].pageX - slider.offsetLeft;
+                scrollLeft = slider.scrollLeft;
+            };
+            const end = () => {
+                isDown = false;
+                slider.classList.remove('active');
+            };
+            const move = (e) => {
+                if (!isDown) return;
+                e.preventDefault();
+                const x = e.pageX || e.touches[0].pageX - slider.offsetLeft;
+                const walk = (x - startX) * 2; 
+                slider.scrollLeft = scrollLeft - walk;
+            };
+            slider.addEventListener('mousedown', start);
+            slider.addEventListener('mouseleave', end);
+            slider.addEventListener('mouseup', end);
+            slider.addEventListener('mousemove', move);
+        }
+
+        function scrollToSection(id) {
+            sfx.playTone(400, 'sine', 0.1);
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+        function celebrate() {
+            sfx.playTone(400, 'sine', 0.1);
+            startConfetti('confetti');
+            sfx.win();
+        }
+
+        /* --- 6. AGGRESSIVE IMAGE PRELOADING --- */
+        // This function handles loading the current image, AND the next 2, AND the previous 1
+        // This ensures zero delay during swipes.
+        function initAggressivePreloading() {
+            const lazyImages = document.querySelectorAll('.lazy-img');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        loadImageAndNeighbors(img);
+                        observer.unobserve(img);
+                    }
+                });
+            }, { rootMargin: '300px', threshold: 0.1 });
+
+            lazyImages.forEach(img => observer.observe(img));
+        }
+
+        function loadImageAndNeighbors(img) {
+            if (!img || img.tagName !== 'IMG') return;
+
+            // Helper to set src and handle errors
+            const safeLoad = (targetImg) => {
+                if (!targetImg) return;
+                if (targetImg.dataset.src && targetImg.src !== targetImg.dataset.src) {
+                    targetImg.src = targetImg.dataset.src;
+                }
+            };
+
+            // Load Current
+            safeLoad(img);
+
+            // Load Siblings (Next 2, Prev 1)
+            const parent = img.parentElement;
+            let next = parent.nextElementSibling;
+            let prev = parent.previousElementSibling;
+
+            safeLoad(next?.querySelector('img'));
+            safeLoad(next?.nextElementSibling?.querySelector('img'));
+            safeLoad(prev?.querySelector('img'));
+        }
+
+        // Global Error Handler for Images
+        // If an image fails to load, replace it with a solid color placeholder
+        document.addEventListener('error', function(e) {
+            if (e.target.tagName === 'IMG' && e.target.classList.contains('lazy-img')) {
+                e.target.onerror = null; // Prevent loop
+                // Create a colored placeholder as fallback
+                e.target.src = 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMzMzMiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZHk9Ii4zZW0iIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiIGZvbnQtc2l6ZT0iMjAiPk5vIEltYWdlPC90ZXh0Pjwvc3ZnPg==';
+            }
+        }, true);
+
+        /* --- 7. TYPING ANIMATION --- */
+        function initTypingAnimation() {
+            const msgContainer = document.getElementById('typing-box');
+            if (!msgContainer) return;
+            msgContainer.innerHTML = ''; // Clear initial text
+            const textToType = `Hi Huzaifa,
+Happy Birthday! 🥳
+I know you're crazy about Roblox and always dreaming about that next skin or more Robux. You're already 12, man! Time flies.
+Just wanted to remind you that you're an awesome cousin and a true friend. Even if I tease you, I'm always proud of you.
+Enjoy your day, Legend! 🔥`;
+            let typeIndex = 0;
+            function typeWriter() {
+                if (typeIndex < textToType.length) {
+                    const char = textToType.charAt(typeIndex);
+                    if (char === '\n') {
+                        msgContainer.innerHTML += '<br>';
+                    } else {
+                        msgContainer.innerHTML += char;
+                    }
+                    typeIndex++;
+                    setTimeout(typeWriter, Math.random() * 30 + 20);
+                }
+            }
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        observer.disconnect();
+                        typeWriter();
+                    }
+                });
+            }, { threshold: 0.3 });
+            observer.observe(msgContainer);
+        }
+
+        /* --- 8. CANVAS CONFETTI --- */
+        const canvas = document.getElementById('confetti-canvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animId;
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+        class Particle {
+            constructor(type) {
+                this.type = type;
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height - canvas.height;
+                this.size = Math.random() * (type === 'robux' ? 20 : 10) + 5;
+                this.speedY = Math.random() * 3 + 2;
+                this.speedX = Math.random() * 2 - 1;
+                this.rotation = Math.random() * 360;
+                this.rotSpeed = Math.random() * 10 - 5;
+                this.color = type === 'robux' ? '#00b06f' : `hsl(${Math.random()*360}, 100%, 50%)`;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                this.rotation += this.rotSpeed;
+                if (this.y > canvas.height) this.y = -20;
+            }
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation * Math.PI / 180);
+                if (this.type === 'robux') {
+                    ctx.fillStyle = this.color;
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 1;
+                    ctx.fillRect(-10, -6, 20, 12);
+                    ctx.strokeRect(-10, -6, 20, 12);
+                    ctx.fillStyle = 'white';
+                    ctx.font = 'bold 10px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('R$', 0, 1);
+                } else {
+                    ctx.fillStyle = this.color;
+                    ctx.fillRect(-this.size/2, -this.size/2, this.size, this.size);
+                }
+                ctx.restore();
+            }
+        }
+        function startConfetti(type) {
+            if (animId) cancelAnimationFrame(animId);
+            particles = [];
+            const count = window.innerWidth < 600 ? 50 : 100;
+            for(let i=0; i<count; i++) particles.push(new Particle(type));
+            function loop() {
+                ctx.clearRect(0,0,canvas.width,canvas.height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                animId = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        /* --- SERVICE WORKER (OFFLINE CACHE) --- */
+        const swCode = `
+            self.addEventListener('install', e => {
+                e.waitUntil(caches.open('app-cache-v1').then(cache => cache.addAll(['/'])));
+            });
+            self.addEventListener('fetch', e => {
+                e.respondWith(caches.match(e.request).then(res => fetch(e.request).then(r => caches.open('app-cache-v1').then(c => { c.put(e.request, r.clone()); return r; }))) || res));
+            });
+        `;
+        if ('serviceWorker' in navigator) {
+            const blob = new Blob([swCode], {type: 'application/javascript'});
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl);
+        }
+
+        /* --- START --- */
+        window.addEventListener('load', () => {
+            setTimeout(startPrank, 500);
+        });
+    </script>
+
+</body></html>
